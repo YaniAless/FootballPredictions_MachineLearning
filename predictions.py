@@ -12,12 +12,6 @@ def getApiKey():
 
 HEADERS = { 'X-RapidAPI-Key': getApiKey()}
 
-
-# 1 - On requete 1 journée de championnat
-# 2 - On récupère tous les fixtures ID (10 normalement) + vainqueur du match 
-# 3 - On requête les prédictions pour chaque fixture ID récupéré 
-# 4 - On ajoute les données reçues, ainsi que le vainqueur du match dans le CSV
-
 def createJsonFile(dictionary, championshipRound):
     with open("/fixtures/" + str(championshipRound) + ".json", "w") as outfile:
         json.dump(dictionary, outfile)
