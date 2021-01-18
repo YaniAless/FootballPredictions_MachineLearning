@@ -27,21 +27,32 @@ def getWinner(homeTeamScore, awayTeamScore):
 
 def getMatchesForChampionshipRound(championshipRound):
     url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound - 1)
-    print("URL => " + url)
+    # print("URL => " + url)
     req = requests.get(url, headers = HEADERS)
     reqJson = json.loads(req.text)
 
     fixtures = reqJson["api"]["fixtures"]
-    fixturesIds = {}
+
+    championshipRoundJson = {}
+    championshipRoundJson["matches"] = []
     for fixture in fixtures:
         fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
+        homeTeamStats, awayTeamStats, comparison = getPredictionsForFicture(fixture["fixture_id"], fixtureWinner)
+        # print(fixture)
         
-        fixturesIds[fixture["fixture_id"]] = fixtureWinner
-    
-    createJsonFile(fixturesIds, championshipRound-1)
+        championshipRoundJson["matches"].append({
+            "winner": fixtureWinner,
+            "home": homeTeamStats,
+            "away": awayTeamStats,
+        })
 
-def getPredictionsForFicture(fixtureId):
-    url = HOST + "predictions/" + fixtureId
+    print(championshipRoundJson)
+    with open("./fixtures/" + str(championshipRound) + ".json", "w") as outfile:
+        json.dump(championshipRoundJson, outfile)
+    # createJsonFile(fixturesIds, championshipRound-1)
+
+def getPredictionsForFicture(fixtureId, fixtureWinner):
+    url = HOST + "predictions/" + str(fixtureId)
     req = requests.get(url, headers = HEADERS)
     reqJson = json.loads(req.text)
 
@@ -56,5 +67,5 @@ if __name__ == "__main__":
     # print(homeTeamStats)
     # print(awayTeamStats)
     # print(comparison)
-    getMatchesForChampionshipRound(20)
+    getMatchesForChampionshipRound(19)
     

@@ -75,3 +75,27 @@ Football predictions using Machine Learning
     }
 }
 ```
+
+# Format final du JSON à exploiter
+
+```
+{
+    "winner":1,
+    "home": {
+        "forme": "50%",
+        "att": "44%",
+        "def": "78%",
+        "goals_avg": 1.4,
+        "goals_against_avg": 0.4,
+        "h2h_result": "93%"
+    },
+    "away": {
+        "forme": "50%",
+        "att": "56%",
+        "def": "22%",
+        "goals_avg": 1.8,
+        "goals_against_avg": 1.4,
+        "h2h_result": "7%"
+    }
+}
+```
