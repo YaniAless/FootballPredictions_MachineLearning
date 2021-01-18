@@ -46,8 +46,7 @@ def getMatchesForChampionshipRound(championshipRound):
             "away": awayTeamStats,
         })
 
-    print(championshipRoundJson)
-    with open("./fixtures/" + str(championshipRound) + ".json", "w") as outfile:
+    with open("./fixtures/" + str(championshipRound-1) + ".json", "w") as outfile:
         json.dump(championshipRoundJson, outfile)
     # createJsonFile(fixturesIds, championshipRound-1)
 
@@ -67,5 +66,5 @@ if __name__ == "__main__":
     # print(homeTeamStats)
     # print(awayTeamStats)
     # print(comparison)
-    getMatchesForChampionshipRound(19)
+    getMatchesForChampionshipRound(18)
     
