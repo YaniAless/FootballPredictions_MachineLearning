@@ -13,7 +13,7 @@ def getApiKey():
 HEADERS = { 'X-RapidAPI-Key': getApiKey()}
 
 def createJsonFile(dictionary, championshipRound):
-    with open("/fixtures/" + str(championshipRound) + ".json", "w") as outfile:
+    with open("./fixtures/" + str(championshipRound) + ".json", "w") as outfile:
         json.dump(dictionary, outfile)
     
 
