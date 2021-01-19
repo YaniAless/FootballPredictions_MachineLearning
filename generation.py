@@ -6,6 +6,7 @@ import os.path
 HOST = "https://api-football-v1.p.rapidapi.com/v2/"
 LIGUE1_ID = "2664"
 ROUND_LABEL = "Regular_Season_-_"
+FOLDER_PATH = "./rounds/"
 
 def getApiKey():
     f = open("vars", "r")
@@ -14,7 +15,7 @@ def getApiKey():
 HEADERS = {"X-RapidAPI-Key": getApiKey()}
 
 def createJsonFile(championshipRoundJson, championshipRound):
-    with open("./rounds/" + str(championshipRound) + ".json", "w") as outfile:
+    with open(FOLDER_PATH + str(championshipRound) + ".json", "w") as outfile:
         json.dump(championshipRoundJson, outfile)
     
 
@@ -43,10 +44,12 @@ def generateJsonByChampionshipRound(championshipRound):
 
     championshipRoundJson = {}
     championshipRoundJson["matches"] = []
+    championshipRoundJson["teams"] = []
     for fixture in fixtures:
-        print(str(fixture["goalsHomeTeam"]) + " " + str(fixture["goalsAwayTeam"]))
         if fixture["goalsHomeTeam"] != None:
             fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
+            championshipRoundJson["teams"].append(fixture["homeTeam"]["team_name"])
+            championshipRoundJson["teams"].append(fixture["awayTeam"]["team_name"])
         else:
             fixtureWinner = "null"
         homeTeamStats, awayTeamStats = getPredictionsForFicture(fixture["fixture_id"], fixtureWinner)
@@ -85,3 +88,18 @@ def getPredictionsForFicture(fixtureId, fixtureWinner):
     }   
     
     return  homeTeamStats, awayTeamStats
+
+def getTeamsForChampionshipRound(championshipRound):
+    filePath = FOLDER_PATH + str(championshipRound-1) + ".json"
+    if os.path.isfile(filePath):
+        jsonFile = readJSONFile(filePath)
+        teams = jsonFile["teams"]
+        teams.sort()
+        return teams
+    else:
+        print("Retrieving the championship round informations... please wait...")
+        generateJsonByChampionshipRound(championshipRound)
+        jsonFile = readJSONFile(filePath)
+        teams = jsonFile["teams"]
+        teams.sort()
+        return teams
