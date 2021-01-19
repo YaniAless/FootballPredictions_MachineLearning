@@ -11,7 +11,7 @@ def getApiKey():
     f = open("vars", "r")
     return f.readline()
 
-HEADERS = { 'X-RapidAPI-Key': getApiKey()}
+HEADERS = {"X-RapidAPI-Key": getApiKey()}
 
 def createJsonFile(championshipRoundJson, championshipRound):
     with open("./rounds/" + str(championshipRound) + ".json", "w") as outfile:
@@ -57,7 +57,7 @@ def generateJsonByChampionshipRound(championshipRound):
             "away": awayTeamStats,
         })
 
-    createJsonFile(championshipRoundJson, championshipRound)
+    createJsonFile(championshipRoundJson, championshipRound-1)
     print("Generated JSON File for championship round " + str(championshipRound))
 
 def getPredictionsForFicture(fixtureId, fixtureWinner):
