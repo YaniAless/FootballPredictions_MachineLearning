@@ -33,17 +33,22 @@ def readJSONFile(pathToFile):
     return readJSON
 
 def generateJsonByChampionshipRound(championshipRound):
-    championshipRound = championshipRound - 1
 
     url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound - 1)
+
     req = requests.get(url, headers = HEADERS)
     reqJson = json.loads(req.text)
+
     fixtures = reqJson["api"]["fixtures"]
 
     championshipRoundJson = {}
     championshipRoundJson["matches"] = []
     for fixture in fixtures:
-        fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
+        print(str(fixture["goalsHomeTeam"]) + " " + str(fixture["goalsAwayTeam"]))
+        if fixture["goalsHomeTeam"] != None:
+            fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
+        else:
+            fixtureWinner = "null"
         homeTeamStats, awayTeamStats = getPredictionsForFicture(fixture["fixture_id"], fixtureWinner)
         
         championshipRoundJson["matches"].append({
