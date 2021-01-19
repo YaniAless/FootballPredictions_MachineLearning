@@ -1,4 +1,5 @@
-import generation as gen
+import service
+import ml
 import asyncio
 
 chosenChampionshipDay = 0
@@ -33,7 +34,7 @@ def askToChooseTeam():
             isInputIntValue = False
 
 def displayTeamsName(chosenChampionshipDay):
-    teams = gen.getTeamsForChampionshipRound(chosenChampionshipDay)    
+    teams = service.getTeamsForChampionshipRound(chosenChampionshipDay)    
     global teamsList
     teamsList += teams
     i = 1
@@ -41,15 +42,10 @@ def displayTeamsName(chosenChampionshipDay):
         print(str(i) + " - " + team)
         i += 1
 
-def predictWinnerWithFixtureInfos():
-    fixtureInfos = gen.getTeamFixtureWithRoundAndTeamName(chosenChampionshipDay, teamsList[chosenTeamId - 1])
-    
-    # il faut commencer la prédiction
-
 if __name__ == "__main__":
     print("Hello ! Let's predict the result of a match !")
 
     askForChampionshipRound()
     askToChooseTeam()
     # On récupère les infos du match pour la journée donnée
-    predictWinnerWithFixtureInfos()
+    ml.predictWinnerWithFixtureInfos(chosenChampionshipDay, teamsList[chosenTeamId - 1])

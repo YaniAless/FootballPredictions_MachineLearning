@@ -75,7 +75,7 @@ def getTeamFixtureWithRoundAndTeamName(championshipRound, teamName):
         homeTeamName = fixture["homeTeam"]["team_name"]
         awayTeamName = fixture["awayTeam"]["team_name"]
         if homeTeamName or awayTeamName == teamName:
-            print(homeTeamName + "  " + awayTeamName + "  " + teamName)
+            print(homeTeamName + "vs" + awayTeamName + " - selected " + teamName)
             fixtureId = fixture["fixture_id"]
             fixtureStats = getFixtureStatsToPredict(fixtureId)
             break
