@@ -52,7 +52,7 @@ def generateJsonByChampionshipRound(championshipRound):
             championshipRoundJson["teams"].append(fixture["awayTeam"]["team_name"])
         else:
             fixtureWinner = "null"
-        homeTeamStats, awayTeamStats = getPredictionsForFicture(fixture["fixture_id"], fixtureWinner)
+        homeTeamStats, awayTeamStats = getPredictionsForfixture(fixture["fixture_id"], fixtureWinner)
         
         championshipRoundJson["matches"].append({
             "winner": fixtureWinner,
@@ -63,7 +63,58 @@ def generateJsonByChampionshipRound(championshipRound):
     createJsonFile(championshipRoundJson, championshipRound-1)
     print("Generated JSON File for championship round " + str(championshipRound))
 
-def getPredictionsForFicture(fixtureId, fixtureWinner):
+def getTeamFixtureWithRoundAndTeamName(championshipRound, teamName):
+    url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound - 1)
+
+    req = requests.get(url, headers = HEADERS)
+    reqJson = json.loads(req.text)
+
+    fixtures = reqJson["api"]["fixtures"]
+    fixtureInfos = {}
+    for fixture in fixtures:
+        homeTeamName = fixture["homeTeam"]["team_name"]
+        awayTeamName = fixture["awayTeam"]["team_name"]
+        if homeTeamName or awayTeamName == teamName:
+            print(homeTeamName + "  " + awayTeamName + "  " + teamName)
+            fixtureId = fixture["fixture_id"]
+            fixtureStats = getFixtureStatsToPredict(fixtureId)
+            break
+    
+    return fixtureStats
+
+
+def getFixtureStatsToPredict(fixtureId):
+    url = HOST + "predictions/" + str(fixtureId)
+    req = requests.get(url, headers = HEADERS)
+    reqJson = json.loads(req.text)
+    
+    comparison = reqJson["api"]["predictions"][0]["comparison"]
+    homeTeamStats = {
+        "goals_avg": reqJson["api"]["predictions"][0]["teams"]["home"]["last_5_matches"]["goals_avg"],
+        "goals_against_avg": reqJson["api"]["predictions"][0]["teams"]["home"]["last_5_matches"]["goals_against_avg"],
+        "forme": comparison["forme"]["home"],
+        "att": comparison["att"]["home"],
+        "def": comparison["def"]["home"],
+        "h2h": comparison["h2h"]["home"],
+    }
+
+    awayTeamStats = {
+        "goals_avg": reqJson["api"]["predictions"][0]["teams"]["away"]["last_5_matches"]["goals_avg"],
+        "goals_against_avg": reqJson["api"]["predictions"][0]["teams"]["away"]["last_5_matches"]["goals_against_avg"],
+        "forme": comparison["forme"]["away"],
+        "att": comparison["att"]["away"],
+        "def": comparison["def"]["away"],
+        "h2h": comparison["h2h"]["away"],
+    }   
+    
+    fixtureStats = {
+        "home": homeTeamStats,
+        "away": awayTeamStats,
+    }
+
+    return fixtureStats
+
+def getPredictionsForfixture(fixtureId, fixtureWinner):
     url = HOST + "predictions/" + str(fixtureId)
     req = requests.get(url, headers = HEADERS)
     reqJson = json.loads(req.text)
