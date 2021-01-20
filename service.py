@@ -2,6 +2,8 @@ import requests
 import pandas as pd
 import json
 import os.path
+import ml
+import numpy as np
 
 HOST = "https://api-football-v1.p.rapidapi.com/v2/"
 LIGUE1_ID = "2664"
@@ -74,8 +76,8 @@ def getTeamFixtureWithRoundAndTeamName(championshipRound, teamName):
     for fixture in fixtures:
         homeTeamName = fixture["homeTeam"]["team_name"]
         awayTeamName = fixture["awayTeam"]["team_name"]
-        if homeTeamName or awayTeamName == teamName:
-            print(homeTeamName + "vs" + awayTeamName + " - selected " + teamName)
+        if homeTeamName == teamName or awayTeamName == teamName:
+            print(homeTeamName + " vs " + awayTeamName)
             fixtureId = fixture["fixture_id"]
             fixtureStats = getFixtureStatsToPredict(fixtureId)
             break
@@ -152,5 +154,17 @@ def getTeamsForChampionshipRound(championshipRound):
         generateJsonByChampionshipRound(championshipRound)
         jsonFile = readJSONFile(filePath)
         teams = jsonFile["teams"]
-        teams.sort()
         return teams
+
+def combinedAllRoundsFound():
+    inputs, desired = [], []
+
+    for f in os.listdir(FOLDER_PATH):
+        championshipRoundsJSON = readJSONFile(FOLDER_PATH + f)
+        inputs2 = ml.extractInputsValuesFromMatches(championshipRoundsJSON["matches"])
+        desired2 = ml.extractDesiredValuesFromMatches(championshipRoundsJSON["matches"])
+        
+        inputs += inputs2
+        desired +=desired2
+    
+    return inputs, desired

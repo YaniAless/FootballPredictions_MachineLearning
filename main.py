@@ -8,30 +8,34 @@ teamsList = []
 
 def askForChampionshipRound():
     global chosenChampionshipDay
-    isInputIntValue = False
-    while isInputIntValue == False:
-        try:
-            chosenChampionshipDay = int(input("First, tell us for what day you want to know a result ! Choose from 1 to 34\n"))
-            if chosenChampionshipDay == 42:
-                exit()
-            else:
-                isInputIntValue = True
-                displayTeamsName(chosenChampionshipDay)
-        except ValueError:
-            print("Please enter a number between 1 and 34")
-            isInputIntValue = False
+    try:
+        chosenChampionshipDay = int(input("First, tell us for what championship day you want to know a result !\n Choose from 1 to 38\n"))
+        if chosenChampionshipDay == 42:
+            print("Goodbye !")
+            exit()
+        else:
+            displayTeamsName(chosenChampionshipDay)
+    except ValueError:
+        print("Please enter a number between 1 and 34")
 
 def askToChooseTeam():
     global chosenTeamId
-    isInputIntValue = False
-    while isInputIntValue == False:
-        try:
-            chosenTeamId = int(input("Pick a team using the number associated with it\n"))
-            isInputIntValue = True
-            
-        except ValueError:
-            print("Please enter a number between 1 and 20")
-            isInputIntValue = False
+    try:
+        chosenTeamId = int(input("Pick a team using the number associated with it\n"))
+        if chosenTeamId > 20 or chosenTeamId <= 0:
+            raise ValueError
+        elif chosenChampionshipDay == 42:
+            print("Goodbye !")
+            exit()
+        else:
+            startPrediction()
+    except ValueError:
+        print("Please enter a number between 1 and 20")
+        askToChooseTeam()
+
+def startPrediction():
+    print("Let's try to found out which team will win the match !")
+    ml.predictWinnerWithFixtureInfos(chosenChampionshipDay, teamsList[chosenTeamId - 1])
 
 def displayTeamsName(chosenChampionshipDay):
     teams = service.getTeamsForChampionshipRound(chosenChampionshipDay)    
@@ -44,8 +48,7 @@ def displayTeamsName(chosenChampionshipDay):
 
 if __name__ == "__main__":
     print("Hello ! Let's predict the result of a match !")
-
     askForChampionshipRound()
     askToChooseTeam()
     # On récupère les infos du match pour la journée donnée
-    ml.predictWinnerWithFixtureInfos(chosenChampionshipDay, teamsList[chosenTeamId - 1])
+    #ml.predictWinnerWithFixtureInfos(chosenChampionshipDay, teamsList[chosenTeamId - 1])
