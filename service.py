@@ -48,25 +48,26 @@ def generateJsonByChampionshipRound(championshipRound):
     championshipRoundJson["matches"] = []
     championshipRoundJson["teams"] = []
     for fixture in fixtures:
-        if fixture["goalsHomeTeam"] != None:
-            fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
-            championshipRoundJson["teams"].append(fixture["homeTeam"]["team_name"])
-            championshipRoundJson["teams"].append(fixture["awayTeam"]["team_name"])
-        else:
-            fixtureWinner = "null"
-        homeTeamStats, awayTeamStats = getPredictionsForfixture(fixture["fixture_id"], fixtureWinner)
-        
-        championshipRoundJson["matches"].append({
-            "winner": fixtureWinner,
-            "home": homeTeamStats,
-            "away": awayTeamStats,
-        })
+        if fixture["statusShort"] != "PST":
+            print(fixture["status"])
+            if fixture["goalsHomeTeam"] != None:
+                fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
+                championshipRoundJson["teams"].append(fixture["homeTeam"]["team_name"])
+                championshipRoundJson["teams"].append(fixture["awayTeam"]["team_name"])
+
+            homeTeamStats, awayTeamStats = getPredictionsForfixture(fixture["fixture_id"], fixtureWinner)
+            
+            championshipRoundJson["matches"].append({
+                "winner": fixtureWinner,
+                "home": homeTeamStats,
+                "away": awayTeamStats,
+            })
 
     createJsonFile(championshipRoundJson, championshipRound-1)
     print("Generated JSON File for championship round " + str(championshipRound))
 
 def getTeamFixtureWithRoundAndTeamName(championshipRound, teamName):
-    url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound - 1)
+    url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound)
 
     req = requests.get(url, headers = HEADERS)
     reqJson = json.loads(req.text)
@@ -165,6 +166,6 @@ def combinedAllRoundsFound():
         desired2 = ml.extractDesiredValuesFromMatches(championshipRoundsJSON["matches"])
         
         inputs += inputs2
-        desired +=desired2
+        desired += desired2
     
     return inputs, desired
