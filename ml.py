@@ -15,15 +15,12 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
     fixtureInfosToCompare = service.getTeamFixtureWithRoundAndTeamName(chosenChampionshipRound, teamName)
     inputs, desired = service.combinedAllRoundsFound()
 
-    TEST_PERCENTAGE = 20
+    TEST_PERCENTAGE = 30
     training_size = int(len(inputs) * (1.0 - TEST_PERCENTAGE / 100.0))
     train_inputs, train_outputs = inputs[:training_size], desired[:training_size] #On coupe le jeu de données en 2
     test_inputs, test_outputs = inputs[training_size:], desired[training_size:]
 
-    # REGARDER ARBRE DE DECISION
-    
-    #mlp = MLPClassifier(solver='sgd', max_iter=10000)
-    mlp = MLPClassifier(solver='sgd', max_iter=10000, hidden_layer_sizes=(10), learning_rate_init=0.000002,verbose=True)
+    mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.0482, random_state=3, hidden_layer_sizes=(5))    
     trainedModel = mlp.fit(train_inputs, train_outputs)
     
     # Evaluer sur l'ensemble d'apprentissage la qualité de mon modèle
@@ -43,8 +40,8 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
     prediction = mlp.predict(np.array(inputsToCompare).reshape(1, -1))
     prediction_odds = mlp.predict_proba(np.array(inputsToCompare).reshape(1, -1))
     
-    print("Match prediction => " + str(prediction))
-    print("Match odds => " + str(prediction_odds))
+    #print("Match prediction => " + str(prediction))
+    #print("Match odds => " + str(prediction_odds))
     
 
 def extractDesiredValuesFromMatches(championshipRoundsMatches):
@@ -119,5 +116,5 @@ def convertPercentToFloat(valueToConvert):
     return round(valueToFloat, 2)
 
 if __name__ == "__main__":
-    predictWinnerWithFixtureInfos(21, "Nantes")
+    predictWinnerWithFixtureInfos(21, "Marseille")
     # il faut commencer la prédiction
