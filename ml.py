@@ -33,18 +33,18 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
 
     trainedModel = mlp.fit(train_inputs, train_outputs)
     
-    # Evaluer sur l'ensemble d'apprentissage la qualité de mon modèle
-    learning_score = mlp.score(train_inputs, train_outputs)
-    print(f"#Score d'apprentissage : {round(learning_score * 100)}%")
+    ## Evaluer sur l'ensemble d'apprentissage la qualité de mon modèle
+    #learning_score = mlp.score(train_inputs, train_outputs)
+    #print(f"#Score d'apprentissage : {round(learning_score * 100)}%")
 
     ## Evaluer sur l'ensemble de test la qualité de mon modèle
-    learning_score = mlp.score(test_inputs, test_outputs)
-    print(f"#Score de test : {round(learning_score * 100)}%")
+    #learning_score = mlp.score(test_inputs, test_outputs)
+    #print(f"#Score de test : {round(learning_score * 100)}%")
 
-    fig, ax = plt.subplots()
-    ax.plot(mlp.loss_curve_)
-    plt.yscale('log')
-    plt.show()
+    # fig, ax = plt.subplots()
+    # ax.plot(mlp.loss_curve_)
+    # plt.yscale('log')
+    # plt.show()
 
     inputsToCompare = extractInputsFromFixtureStats(fixtureInfosToCompare)
     prediction = mlp.predict(np.array(inputsToCompare).reshape(1, -1))
