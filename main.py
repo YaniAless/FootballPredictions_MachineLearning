@@ -1,6 +1,5 @@
 import service
 import ml
-import asyncio
 
 chosenChampionshipDay = 0
 chosenTeamId = 0
