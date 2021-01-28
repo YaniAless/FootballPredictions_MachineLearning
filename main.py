@@ -9,10 +9,12 @@ teamsList = []
 def askForChampionshipRound():
     global chosenChampionshipDay
     try:
-        chosenChampionshipDay = int(input("First, tell us for what championship day you want to know a result !\n Choose from 1 to 38\n"))
+        chosenChampionshipDay = int(input("First, tell us for what championship day you want to know a result !\nChoose the championship day, from 1 to 38\n"))
         if chosenChampionshipDay == 42:
             print("Goodbye !")
             exit()
+        elif chosenChampionshipDay > 38 or chosenChampionshipDay <= 0:
+            askForChampionshipRound()
         else:
             displayTeamsName(chosenChampionshipDay)
     except ValueError:
@@ -50,5 +52,4 @@ if __name__ == "__main__":
     print("Hello ! Let's predict the result of a match !")
     askForChampionshipRound()
     askToChooseTeam()
-    # On récupère les infos du match pour la journée donnée
-    #ml.predictWinnerWithFixtureInfos(chosenChampionshipDay, teamsList[chosenTeamId - 1])
+    print("Let's hope we are right in our prediction ! Goodbye :)")

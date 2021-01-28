@@ -50,8 +50,8 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
     prediction = mlp.predict(np.array(inputsToCompare).reshape(1, -1))
     prediction_odds = mlp.predict_proba(np.array(inputsToCompare).reshape(1, -1))
     
-    #service.displayPrediction(prediction)
-    #service.displayOdds(prediction_odds)
+    service.displayPrediction(prediction)
+    service.displayOdds(prediction_odds)
     
 def extractDesiredValuesFromMatches(championshipRoundsMatches):
     desired = []
