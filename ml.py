@@ -20,7 +20,7 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
     train_inputs, train_outputs = inputs[:training_size], desired[:training_size] #On coupe le jeu de données en 2
     test_inputs, test_outputs = inputs[training_size:], desired[training_size:]
 
-    mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.0482, random_state=3, hidden_layer_sizes=(5))    
+    mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.048214, random_state=3, hidden_layer_sizes=(14), verbose=True, tol=0.000001)    
     trainedModel = mlp.fit(train_inputs, train_outputs)
     
     # Evaluer sur l'ensemble d'apprentissage la qualité de mon modèle
