@@ -20,7 +20,17 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
     train_inputs, train_outputs = inputs[:training_size], desired[:training_size] #On coupe le jeu de données en 2
     test_inputs, test_outputs = inputs[training_size:], desired[training_size:]
 
-    mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.048214, random_state=3, hidden_layer_sizes=(14), verbose=True, tol=0.000001)    
+    #mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.048214, random_state=3, hidden_layer_sizes=(14), verbose=True, tol=0.0000001)
+    #mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.06, hidden_layer_sizes=(12,6,3), 
+    # random_state=3,verbose=True, tol=0.00001, activation='logistic')
+
+    #mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.024183776,
+    #    hidden_layer_sizes=(12,6,3), random_state=3, tol=0.00004, activation='logistic')
+
+    mlp = MLPClassifier(solver='adam', max_iter=10000, learning_rate_init=0.024183776,
+        hidden_layer_sizes=(8), random_state=3, tol=0.00004, activation='logistic')
+
+
     trainedModel = mlp.fit(train_inputs, train_outputs)
     
     # Evaluer sur l'ensemble d'apprentissage la qualité de mon modèle
@@ -40,10 +50,9 @@ def predictWinnerWithFixtureInfos(chosenChampionshipRound, teamName):
     prediction = mlp.predict(np.array(inputsToCompare).reshape(1, -1))
     prediction_odds = mlp.predict_proba(np.array(inputsToCompare).reshape(1, -1))
     
-    #print("Match prediction => " + str(prediction))
-    #print("Match odds => " + str(prediction_odds))
+    #service.displayPrediction(prediction)
+    #service.displayOdds(prediction_odds)
     
-
 def extractDesiredValuesFromMatches(championshipRoundsMatches):
     desired = []
 
