@@ -10,6 +10,9 @@ LIGUE1_ID = "2664"
 ROUND_LABEL = "Regular_Season_-_"
 FOLDER_PATH = "./rounds/"
 
+_homeTeamName = ""
+_awayTeamName = ""
+
 def getApiKey():
     f = open("vars", "r")
     return f.readline()
@@ -48,36 +51,40 @@ def generateJsonByChampionshipRound(championshipRound):
     championshipRoundJson["matches"] = []
     championshipRoundJson["teams"] = []
     for fixture in fixtures:
-        if fixture["goalsHomeTeam"] != None:
-            fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
-            championshipRoundJson["teams"].append(fixture["homeTeam"]["team_name"])
-            championshipRoundJson["teams"].append(fixture["awayTeam"]["team_name"])
-        else:
-            fixtureWinner = "null"
-        homeTeamStats, awayTeamStats = getPredictionsForfixture(fixture["fixture_id"], fixtureWinner)
-        
-        championshipRoundJson["matches"].append({
-            "winner": fixtureWinner,
-            "home": homeTeamStats,
-            "away": awayTeamStats,
-        })
+        if fixture["statusShort"] != "PST":
+            print(fixture["status"])
+            if fixture["goalsHomeTeam"] != None:
+                fixtureWinner = getWinner(fixture["goalsHomeTeam"], fixture["goalsAwayTeam"])
+                championshipRoundJson["teams"].append(fixture["homeTeam"]["team_name"])
+                championshipRoundJson["teams"].append(fixture["awayTeam"]["team_name"])
+
+            homeTeamStats, awayTeamStats = getPredictionsForfixture(fixture["fixture_id"], fixtureWinner)
+            
+            championshipRoundJson["matches"].append({
+                "winner": fixtureWinner,
+                "home": homeTeamStats,
+                "away": awayTeamStats,
+            })
 
     createJsonFile(championshipRoundJson, championshipRound-1)
     print("Generated JSON File for championship round " + str(championshipRound))
 
 def getTeamFixtureWithRoundAndTeamName(championshipRound, teamName):
-    url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound - 1)
+    global _homeTeamName
+    global _awayTeamName
+    url = HOST + "fixtures/league/" + LIGUE1_ID + "/" + ROUND_LABEL + str(championshipRound)
 
     req = requests.get(url, headers = HEADERS)
     reqJson = json.loads(req.text)
 
     fixtures = reqJson["api"]["fixtures"]
-    fixtureInfos = {}
     for fixture in fixtures:
         homeTeamName = fixture["homeTeam"]["team_name"]
         awayTeamName = fixture["awayTeam"]["team_name"]
         if homeTeamName == teamName or awayTeamName == teamName:
             print(homeTeamName + " vs " + awayTeamName)
+            _homeTeamName = homeTeamName
+            _awayTeamName = awayTeamName
             fixtureId = fixture["fixture_id"]
             fixtureStats = getFixtureStatsToPredict(fixtureId)
             break
@@ -165,6 +172,22 @@ def combinedAllRoundsFound():
         desired2 = ml.extractDesiredValuesFromMatches(championshipRoundsJSON["matches"])
         
         inputs += inputs2
-        desired +=desired2
+        desired += desired2
     
     return inputs, desired
+
+def displayPrediction(predictionIndex):
+    if predictionIndex == 1:
+        print("Our prediction is that " + _homeTeamName + " should win the match !")
+    elif predictionIndex == 2:
+        print("Our prediction is that " + _awayTeamName + " should win the match !")
+    else:
+        print("Our prediction is that the match between " + _homeTeamName + " and " + _awayTeamName + " will result in a draw")
+
+def displayOdds(oddsProba):
+    print("The odds for this match are the following :")
+    print(_homeTeamName + " has a " + str(round(oddsProba[0][1] * 100,2)) + "% chance of winning the match")
+    print(_awayTeamName + " has a " + str(round(oddsProba[0][2] * 100,2)) + "% chance of winning the match")
+    print(str(round(oddsProba[0][0] * 100, 2)) + "% chance to result in a draw")
+
+

@@ -1,6 +1,5 @@
 import service
 import ml
-import asyncio
 
 chosenChampionshipDay = 0
 chosenTeamId = 0
@@ -9,14 +8,17 @@ teamsList = []
 def askForChampionshipRound():
     global chosenChampionshipDay
     try:
-        chosenChampionshipDay = int(input("First, tell us for what championship day you want to know a result !\n Choose from 1 to 38\n"))
+        chosenChampionshipDay = int(input("First, tell us for what championship day you want to know a result !\nChoose the championship day, from 1 to 38\n"))
         if chosenChampionshipDay == 42:
             print("Goodbye !")
             exit()
-        else:
+        elif chosenChampionshipDay <= 38 and chosenChampionshipDay > 0:
             displayTeamsName(chosenChampionshipDay)
+        else:
+            askForChampionshipRound()
     except ValueError:
-        print("Please enter a number between 1 and 34")
+        print("Please enter a number between 1 and 38")
+        askForChampionshipRound()
 
 def askToChooseTeam():
     global chosenTeamId
@@ -50,5 +52,4 @@ if __name__ == "__main__":
     print("Hello ! Let's predict the result of a match !")
     askForChampionshipRound()
     askToChooseTeam()
-    # On récupère les infos du match pour la journée donnée
-    #ml.predictWinnerWithFixtureInfos(chosenChampionshipDay, teamsList[chosenTeamId - 1])
+    print("\n\nLet's hope we are right in our prediction ! Goodbye :)")
