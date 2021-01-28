@@ -13,12 +13,13 @@ def askForChampionshipRound():
         if chosenChampionshipDay == 42:
             print("Goodbye !")
             exit()
-        elif chosenChampionshipDay > 38 or chosenChampionshipDay <= 0:
-            askForChampionshipRound()
-        else:
+        elif chosenChampionshipDay <= 38 and chosenChampionshipDay > 0:
             displayTeamsName(chosenChampionshipDay)
+        else:
+            askForChampionshipRound()
     except ValueError:
-        print("Please enter a number between 1 and 34")
+        print("Please enter a number between 1 and 38")
+        askForChampionshipRound()
 
 def askToChooseTeam():
     global chosenTeamId
@@ -52,4 +53,4 @@ if __name__ == "__main__":
     print("Hello ! Let's predict the result of a match !")
     askForChampionshipRound()
     askToChooseTeam()
-    print("Let's hope we are right in our prediction ! Goodbye :)")
+    print("\n\nLet's hope we are right in our prediction ! Goodbye :)")
